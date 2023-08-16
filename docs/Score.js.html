@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Score.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Score.html">Score</a><ul class='methods'><li data-type='method'><a href="Score.html#.add_points">add_points</a></li><li data-type='method'><a href="Score.html#.cleared_lines">cleared_lines</a></li><li data-type='method'><a href="Score.html#.level">level</a></li><li data-type='method'><a href="Score.html#.new_score">new_score</a></li></ul></li><li><a href="Tetris.html">Tetris</a><ul class='methods'><li data-type='method'><a href="Tetris.html#.hard_drop">hard_drop</a></li><li data-type='method'><a href="Tetris.html#.is_game_over">is_game_over</a></li><li data-type='method'><a href="Tetris.html#.left">left</a></li><li data-type='method'><a href="Tetris.html#.new_game">new_game</a></li><li data-type='method'><a href="Tetris.html#.next_turn">next_turn</a></li><li data-type='method'><a href="Tetris.html#.right">right</a></li><li data-type='method'><a href="Tetris.html#.rotate_ccw">rotate_ccw</a></li><li data-type='method'><a href="Tetris.html#.rotate_cw">rotate_cw</a></li><li data-type='method'><a href="Tetris.html#.soft_drop">soft_drop</a></li><li data-type='method'><a href="Tetris.html#.tetromino_coordiates">tetromino_coordiates</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Score.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace Score
+ * @author A. Freddie Page
+ * @version 2022.23
+ * This module provides the scoring system for a Tetris Game.
+ */
+const Score = {};
+
+/**
+ * The score object contains information about the score of the game.
+ * @memberof Score
+ * @typedef {Object} Score
+ * @property {number} score The score of the game
+ * @property {number} lines_cleared The number of lines cleared
+ * @property {boolean} is_tetris Whether the last line cleared was a tetris
+ * 
+ */
+
+/**
+ * Returns a game state for a new Tetris Game.
+ * @function
+ * @memberof Score
+ * @returns {Score.Score} The new game.
+ */
+Score.new_score = function () {
+    return {
+        "score": 0,
+        "lines_cleared": 0,
+        "is_tetris":false,
+    };
+};
+
+/**
+ * Returns what level you are on.
+ * You start at level 1, and advance a level every 10 lines cleared.
+ * @function
+ * @memberof Score
+ * @param {Score.Score} score The game state.
+ * @returns {number} Returns what level you are on.
+ */
+Score.level = function (score) {
+    //return score.lines_cleared;
+    if(score.lines_cleared&lt;10){
+        return 1;
+    }else{
+        return Math.floor((score.lines_cleared)/10+1);
+    }
+};
+
+/**
+ * When clearing lines, you get more points for multiple lines cleared at once.
+ * Single line – 100 points per level
+ * Double lines – 300 points per level
+ * Triple lines – 500 points per level
+ * Tetris – four lines – 800 points per level
+ * Back-to-back Tetris – Scoring a tetris if the previous line clear was also a tetris – 1200 points per level.
+ * @function
+ * @memberof Score
+ * @param {number} lines The number of cleared lines.
+ * @param {Score.Score} score The game state.
+ * @returns {Score.Score} Returns a new Score with additional lines cleared and the score updated.
+ */
+ Score.cleared_lines = function (lines,score) {
+    if(lines>0){
+        var coefficient=0;
+        var is_tetris=false;
+        switch (lines) {
+            case (1):
+                coefficient=100;
+                break;
+            case (2):
+                coefficient=300;
+                break;
+            case (3):
+                coefficient=500;
+                break;
+            case (4):
+                coefficient=800;
+                is_tetris=true;
+                if(score.is_tetris){
+                    coefficient=1200;
+                }
+                break;
+            }
+        const current_level=Score.level(score);
+        score.score=score.score+current_level*coefficient;
+        score.lines_cleared=score.lines_cleared+lines;
+        score.is_tetris=is_tetris;
+    }
+    return score;
+
+};
+
+/**
+ * Add a given number of points to a given score
+ * @function
+ * @memberof Score
+ * @param {number} points The given number of points.
+ * @param {Score.Score} score The game state
+ */
+ Score.add_points = function (points,score) {
+    score.score=score.score+points;
+};
+
+export default Object.freeze(Score);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Tue Aug 15 2023 01:37:40 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
